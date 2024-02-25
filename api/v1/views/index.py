@@ -28,3 +28,13 @@ def stats():
         stats[names[key]] = storage.count(key)
         data = json.dumps(stats, indent=4)
     return Response(data + '\n', status=200, mimetype="application/json")
+
+
+@app_views.route("/nop", methods=["GET"])
+def not_found():
+    '''
+    Create a handler for 404 errors that returns a
+    JSON-formatted 404 status code response.
+    '''
+    status = json.dumps({"error": "Not found"}, indent=4)
+    return Response(status + '\n', status=200, mimetype="application/json")
