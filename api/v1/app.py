@@ -1,9 +1,11 @@
 #!/usr/bin/python3
 '''REST API'''
+import json
 from os import getenv
 from flask import Flask
 from models import storage
 from api.v1.views import app_views
+from flask import Response
 
 
 app = Flask(__name__)
@@ -20,7 +22,7 @@ def teardown(exception):
 
 @app.errorhandler(404)
 def not_found(error):
-    return make_response(jsonify({'error': 'Not found'}), 404)
+    return Response(json.dumps({'error': 'Not found'}, indent=4) + '\n', 404)
 
 
 if __name__ == "__main__":

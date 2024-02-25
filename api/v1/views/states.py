@@ -35,3 +35,32 @@ def delete_state(state_id):
 	storage.delete(state)
 	storage.save()
 	return Response(json.dumps({}), 200, mimetype="application/json")
+
+@app_views.route("/states", methods=["POST"], strict_slashes=False)
+def create_state():
+	'''Creates a State'''
+	if not request.json:
+		abort(400, "Not a JSON")
+	if "name" not in request.json:
+		abort(400, "Missing Name")
+	data = request.get_json()
+	new_state = State(**data)
+	new_state.save()
+	return Response(json.dumps(new_state.to_dict(), indent=4) + '\n', 201,
+				    mimetype="application/json")
+
+app_views.route("/states/<state_id>", methods=["PUT"], strict_slashes=False)
+def update_state(state_id):
+	'''Updates a state object'''
+	if not request.json:
+		abort(400, "Not a JSON")
+	state = storage.get(State, state_id)
+	if not state:
+		abort(404)
+	data = request.get_json()
+	for key, value in data.items():
+		if key not in ["id", "created_at", "updated_at"]:
+			setattr(state, key, value)
+	state.save()
+	return Response(json.dumps(state.to_dict(), indent=4) + '\n', 200,
+				    mimetype="application/json")
