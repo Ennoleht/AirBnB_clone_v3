@@ -41,7 +41,7 @@ class User(BaseModel, Base):
     def password(self):
         '''Gets password'''
         return self._password
-    
+
     @password.setter
     def password(self, password):
         '''Hashes password'''
