@@ -11,6 +11,7 @@ from sqlalchemy import Column, String, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 import uuid
 
+
 time = "%Y-%m-%dT%H:%M:%S.%f"
 
 if models.storage_t == "db":
@@ -66,6 +67,9 @@ class BaseModel:
         if "updated_at" in new_dict:
             new_dict["updated_at"] = new_dict["updated_at"].strftime(time)
         new_dict["__class__"] = self.__class__.__name__
+        if models.storage_t == "db":
+            if "password" in new_dict:
+                del new_dict["password"]
         if "_sa_instance_state" in new_dict:
             del new_dict["_sa_instance_state"]
         return new_dict
