@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# Check if at least one argument is provided
+if [ $# -eq 0 ]; then
+    echo "Usage: $0 <files>"
+    exit 1
+fi
+
+# Prompt for commit message
+read -r -p "Enter commit message: " message
+
+# Add provided files
+git add "$@"
+
+# Commit changes with the provided message
+git commit -m "$message"
+
+# Push changes to the remote repository
+git push
