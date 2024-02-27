@@ -62,7 +62,7 @@ class BaseModel:
     def to_dict(self, fs=False):
         """returns a dictionary containing all keys/values of the instance"""
         new_dict = self.__dict__.copy()
-        if new_dict["_password"]:
+        if new_dict.get("_password", None):
             # print("replacing _password as password")
             new_dict["password"] = new_dict["_password"]
             del new_dict["_password"]
