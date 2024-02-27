@@ -64,6 +64,7 @@ def create_place(city_id):
     if not city:
         abort(404)
     user_id = data["user_id"]
+    data["city_id"] = city_id
     user = storage.get(User, user_id)
     if not user:
         abort(404)
