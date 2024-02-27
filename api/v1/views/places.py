@@ -4,6 +4,7 @@ from models.place import Place
 from models.city import City
 from models.user import User
 from models.state import State
+from models.amenity import Amenity
 import json
 from api.v1.views import app_views
 from flask import Response, abort, request, jsonify
@@ -52,7 +53,7 @@ def delete_place(place_id):
                  methods=["POST"], strict_slashes=False)
 def create_place(city_id):
     '''Creates a Place'''
-    if not request.json:
+    if not request.is_json:
         abort(400, "Not a JSON")
     city = storage.get(Place, city_id)
     if not city:
@@ -73,11 +74,9 @@ def create_place(city_id):
 
 
 app_views.route("/places/<place_id>", methods=["PUT"], strict_slashes=False)
-
-
 def update_place(place_id):
     '''Updates a Place object'''
-    if not request.json:
+    if not request.is_json:
         abort(400, "Not a JSON")
     place = storage.get(Place, place_id)
     if not place:
@@ -97,8 +96,7 @@ def places_search():
     Retrieves all Place objects depending of the JSON in the body
     of the request
     """
-
-    if request.get_json() is None:
+    if not request.is_json:
         abort(400, description="Not a JSON")
 
     data = request.get_json()
