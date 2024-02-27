@@ -34,27 +34,10 @@ if __name__ == "__main__":
             break
     
     if city_id is None:
-        print("City without places not found")
+        print("City without cities not found")
     
-    """ get place 
+    """ POST /api/v1/cities/<city_id>/places
     """
-    r = requests.get("http://0.0.0.0:5000/api/v1/cities/{}/places".format(city_id))
-    r_j = r.json()
-    place_id = r_j[0].get('id')
-    
-    """ Get user
-    """
-    r = requests.get("http://0.0.0.0:5000/api/v1/users")
-    r_j = r.json()
-    user_id = r_j[0].get('id')
-
-    
-    """ POST /api/v1/places/<place_id>/reviews
-    """
-    r = requests.post("http://0.0.0.0:5000/api/v1/places/{}/reviews/".format(place_id), data=json.dumps({ 'user_id': user_id, 'text': "NewReview" }), headers={ 'Content-Type': "application/json" })
+    r = requests.post("http://0.0.0.0:5000/api/v1/cities/{}/places/".format(city_id), data=json.dumps({ 'name': "NewPlace", 'number_rooms': 4, 'number_bathrooms': 3, 'max_guest': 6, 'price_by_night': 100, 'latitude': 1.3, 'longitude': 2.3 }), headers={ 'Content-Type': "application/json" })
     print(r.status_code)
-    r_j = r.json()
-    print(r_j.get('id') is None)
-    print(r_j.get('user_id') == user_id)
-    print(r_j.get('text') == "NewReview")
-    
+    print(r)
