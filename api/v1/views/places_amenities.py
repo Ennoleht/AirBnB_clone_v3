@@ -17,7 +17,7 @@ from models import storage
 def get_place_amenities(place_id):
     '''Retrieves list of place amenities'''
     amenity_list = []
-    place = storage.all(Place, place_id)
+    place = storage.get(Place, place_id)
     if not place:
         abort(404)
     if getenv("HBNB_TYPE_STORAGE") == "db":
