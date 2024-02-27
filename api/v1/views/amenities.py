@@ -60,7 +60,7 @@ def create_amenity():
                     mimetype="application/json")
 
 
-app_views.route(
+@app_views.route(
     "/amenities/<amenity_id>",
     methods=["PUT"],
     strict_slashes=False)

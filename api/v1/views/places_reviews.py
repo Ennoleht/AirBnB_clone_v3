@@ -78,7 +78,7 @@ def create_review(place_id):
                     mimetype="application/json")
 
 
-app_views.route("/reviews/<review_id>", methods=["PUT"], strict_slashes=False)
+@app_views.route("/reviews/<review_id>", methods=["PUT"], strict_slashes=False)
 def update_review(review_id):
     '''Updates a review object'''
     if not request.is_json:

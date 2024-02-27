@@ -73,7 +73,7 @@ def create_place(city_id):
                     mimetype="application/json")
 
 
-app_views.route("/places/<place_id>", methods=["PUT"], strict_slashes=False)
+@app_views.route("/places/<place_id>", methods=["PUT"], strict_slashes=False)
 def update_place(place_id):
     '''Updates a Place object'''
     if not request.is_json:

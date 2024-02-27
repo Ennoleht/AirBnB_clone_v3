@@ -54,8 +54,8 @@ def create_user():
                     mimetype="application/json")
 
 
-app_views.route("/users/<user_id>", methods=["PUT"],
-                strict_slashes=False)
+@app_views.route("/users/<user_id>", methods=["PUT"],
+                 strict_slashes=False)
 def update_user(user_id):
     '''Updates a User object'''
     if not request.is_json:
