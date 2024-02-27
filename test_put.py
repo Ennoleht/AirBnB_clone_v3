@@ -1,60 +1,25 @@
 #!/usr/bin/python3
 """Testing file
 """
-import json
-import requests
+import hashlib
+import MySQLdb
+import sys
 
 if __name__ == "__main__":
-    """ get the state with cities
+    """ Access to database and get password TODO
     """
-    r = requests.get("http://0.0.0.0:5000/api/v1/states")
-    r_j = r.json()
+    user_email = "b@b.com"
+    clear_pwd = "pwdB"
+    hidden_pwd = hashlib.md5(clear_pwd.encode()).hexdigest()
     
-    state_id = None
-    for state_j in r_j:
-        rs = requests.get("http://0.0.0.0:5000/api/v1/states/{}/cities".format(state_j.get('id')))
-        rs_j = rs.json()
-        if len(rs_j) != 0:
-            state_id = state_j.get('id')
-            break
-    
-    if state_id is None:
-        print("State with cities not found")
-    
-    """ get city
-    """
-    r = requests.get("http://0.0.0.0:5000/api/v1/states/{}/cities".format(state_id))
-    r_j = r.json()
-    city_id = None
-    for city_j in r_j:
-        rc = requests.get("http://0.0.0.0:5000/api/v1/cities/{}/places".format(city_j.get('id')))
-        rc_j = rc.json()
-        if len(rc_j) != 0:
-            city_id = city_j.get('id')
-            break
-    
-    if city_id is None:
-        print("City without places not found")
-    
-    """ get place 
-    """
-    r = requests.get("http://0.0.0.0:5000/api/v1/cities/{}/places".format(city_id))
-    r_j = r.json()
-    place_id = r_j[0].get('id')
-    
-    """ Get user
-    """
-    r = requests.get("http://0.0.0.0:5000/api/v1/users")
-    r_j = r.json()
-    user_id = r_j[0].get('id')
-
-    
-    """ POST /api/v1/places/<place_id>/reviews
-    """
-    r = requests.post("http://0.0.0.0:5000/api/v1/places/{}/reviews/".format(place_id), data=json.dumps({ 'user_id': user_id, 'text': "NewReview" }), headers={ 'Content-Type': "application/json" })
-    print(r.status_code)
-    r_j = r.json()
-    print(r_j.get('id') is None)
-    print(r_j.get('user_id') == user_id)
-    print(r_j.get('text') == "NewReview")
-    
+    conn = MySQLdb.connect(host="localhost", port=3306, user=sys.argv[1], passwd=sys.argv[2], db=sys.argv[3], charset="utf8")
+    print("connected")
+    cur = conn.cursor()
+    cur.execute("SELECT password FROM users WHERE email = '{}' LIMIT 1".format(user_email))
+    query_rows = cur.fetchall()
+    print("Result: ", query_rows)
+    for row in query_rows:
+        if hidden_pwd.lower() == row[0].lower():
+            print("OK")
+    cur.close()
+    conn.close()
