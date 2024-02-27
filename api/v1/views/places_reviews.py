@@ -3,6 +3,7 @@
 from models.place import Place
 from models.user import User
 from models.review import Review
+from models.state import State
 import json
 from api.v1.views import app_views
 from flask import Response, abort, request
@@ -57,19 +58,20 @@ def delete_review(review_id):
                  methods=["POST"], strict_slashes=False)
 def create_review(place_id):
     '''Creates a Review'''
-    if not request.json:
+    if not request.is_json:
         abort(400, "Not a JSON")
     place = storage.get(Place, place_id)
     if not place:
         abort(404)
     if "user_id" not in request.json:
-        abort(400, "Missing C")
+        abort(400, "Missing user_id")
     if "text" not in request.json:
         abort(400, "Missing text")
     data = request.get_json()
-    user_id = data["text"]
-    user = storage.get(User, place_id)
-    if not place:
+    user_id = data["user_id"]
+    data["place_id"] = place_id
+    user = storage.get(User, user_id)
+    if not user:
         abort(404)
     new_review = Review(**data)
     new_review.save()
@@ -77,12 +79,10 @@ def create_review(place_id):
                     mimetype="application/json")
 
 
-app_views.route("/reviews/<review_id>", methods=["PUT"], strict_slashes=False)
-
-
+@app_views.route("/reviews/<review_id>", methods=["PUT"], strict_slashes=False)
 def update_review(review_id):
     '''Updates a review object'''
-    if not request.json:
+    if not request.is_json:
         abort(400, "Not a JSON")
     review = storage.get(Review, review_id)
     if not review:

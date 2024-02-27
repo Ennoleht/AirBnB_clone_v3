@@ -41,7 +41,7 @@ def delete_user(user_id):
 @app_views.route("/users", methods=["POST"], strict_slashes=False)
 def create_user():
     '''Creates a User'''
-    if not request.json:
+    if not request.is_json:
         abort(400, "Not a JSON")
     if "email" not in request.json:
         abort(400, "Missing email")
@@ -54,12 +54,11 @@ def create_user():
                     mimetype="application/json")
 
 
-app_views.route("/users/<user_id>", methods=["PUT"], strict_slashes=False)
-
-
+@app_views.route("/users/<user_id>", methods=["PUT"],
+                 strict_slashes=False)
 def update_user(user_id):
     '''Updates a User object'''
-    if not request.json:
+    if not request.is_json:
         abort(400, "Not a JSON")
     user = storage.get(User, user_id)
     if not user:
@@ -69,4 +68,4 @@ def update_user(user_id):
         if key not in ["id", "created_at", "updated_at"]:
             setattr(user, key, value)
     user.save()
-    return jsonify(amenity.to_dict()), 200
+    return jsonify(user.to_dict()), 200

@@ -3,9 +3,11 @@
 from models.place import Place
 from models.city import City
 from models.user import User
+from models.state import State
+from models.amenity import Amenity
 import json
 from api.v1.views import app_views
-from flask import Response, abort, request
+from flask import Response, abort, request, jsonify
 from models import storage
 
 
@@ -51,32 +53,31 @@ def delete_place(place_id):
                  methods=["POST"], strict_slashes=False)
 def create_place(city_id):
     '''Creates a Place'''
-    if not request.json:
+    if not request.is_json:
         abort(400, "Not a JSON")
-    city = storage.get(Place, city_id)
-    if not city:
-        abort(400)
     if "user_id" not in request.json:
         abort(400, "Missing user_id")
     if "name" not in request.json:
         abort(400, "Missing name")
     data = request.get_json()
+    city = storage.get(City, city_id)
+    if not city:
+        abort(404)
     user_id = data["user_id"]
-    user = storage.get(Place, user_id)
+    data["city_id"] = city_id
+    user = storage.get(User, user_id)
     if not user:
-        abort(400)
+        abort(404)
     new_place = Place(**data)
     new_place.save()
     return Response(json.dumps(new_place.to_dict(), indent=4) + '\n', 201,
                     mimetype="application/json")
 
 
-app_views.route("/places/<place_id>", methods=["PUT"], strict_slashes=False)
-
-
+@app_views.route("/places/<place_id>", methods=["PUT"], strict_slashes=False)
 def update_place(place_id):
     '''Updates a Place object'''
-    if not request.json:
+    if not request.is_json:
         abort(400, "Not a JSON")
     place = storage.get(Place, place_id)
     if not place:
@@ -96,8 +97,7 @@ def places_search():
     Retrieves all Place objects depending of the JSON in the body
     of the request
     """
-
-    if request.get_json() is None:
+    if not request.is_json:
         abort(400, description="Not a JSON")
 
     data = request.get_json()
