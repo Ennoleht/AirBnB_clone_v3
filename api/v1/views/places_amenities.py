@@ -32,7 +32,7 @@ def get_place_amenities(place_id):
         mimetype="application/json")
 
 
-@app_views.route('/places/<place_id>/amenities/<amenity_id>', methods=['POST'],
+@app_views.route('/places/<place_id>/amenities/<amenity_id>', methods=['DELETE'],
                  strict_slashes=False)
 def delete_place_amenity(place_id, amenity_id):
     """
