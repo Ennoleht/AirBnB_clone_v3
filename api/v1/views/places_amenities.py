@@ -13,20 +13,23 @@ from models import storage
 
 
 @app_views.route("/places/<place_id>/amenities", methods=["GET"],
-				 strict_slashes=False)
+                 strict_slashes=False)
 def get_place_amenities(place_id):
-	'''Retrieves list of place amenities'''
-	amenity_list = []
-	place = storage.all(Place, place_id)
-	if not place:
-		abort(404)
-	if getenv("HBNB_TYPE_STORAGE") == "db":
-		amenity_list = [amenity.to_dict() for amenity in place.amenities]
-	else:
-		amenity_list = [storage.get(Amenity, amenity_id).to_dict() for
-				  		amenity_id in place.amenity_ids]
-	amenity_data = json.dumps(amenity_list, indent=4)
-	return Response(amenity_data + '\n', status=200, mimetype="application/json")
+    '''Retrieves list of place amenities'''
+    amenity_list = []
+    place = storage.all(Place, place_id)
+    if not place:
+        abort(404)
+    if getenv("HBNB_TYPE_STORAGE") == "db":
+        amenity_list = [amenity.to_dict() for amenity in place.amenities]
+    else:
+        amenity_list = [storage.get(Amenity, amenity_id).to_dict() for
+                        amenity_id in place.amenity_ids]
+    amenity_data = json.dumps(amenity_list, indent=4)
+    return Response(
+        amenity_data + '\n',
+        status=200,
+        mimetype="application/json")
 
 
 @app_views.route('/places/<place_id>/amenities/<amenity_id>', methods=['POST'],
