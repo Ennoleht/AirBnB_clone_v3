@@ -5,7 +5,7 @@ from models.city import City
 from models.state import State
 import json
 from api.v1.views import app_views
-from flask import Response, abort, request
+from flask import Response, abort, request, jsonify
 from models import storage
 
 
